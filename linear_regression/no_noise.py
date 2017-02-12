@@ -3,11 +3,13 @@
 from functools import partial
 
 import numpy as np
+from sklearn import linear_model
 
-from common import LinearRegression, linear, produce_data, mse, mse_gradient
+from common import LinearRegression, linear, read_data, produce_data, mse, mse_gradient
 
 
 if __name__ == '__main__':
+    # Manual training
     MAX_ERROR = 0.001
     MIN_DELTA_ERROR = 0.001
     MAX_ITERATIONS = 10
@@ -22,5 +24,12 @@ if __name__ == '__main__':
     model = LinearRegression(data)
     model.train(mse, mse_gradient, MAX_ERROR, MIN_DELTA_ERROR, MAX_ITERATIONS,
                 LEARNING_RATE, LEARNING_RATE_DECAY)
+    print("Manual params: " + str(model.params))
+
+    # Sk learn training
+    reg = linear_model.LinearRegression()
+    x, y = read_data(data)
+    reg.fit(x.reshape(-1, 1), y)
+    print("Sklearn params: " + str(reg.coef_) + " " + str(reg.intercept_))
 
     input('Waiting for user input to close...')
